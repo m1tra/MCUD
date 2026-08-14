@@ -1,5 +1,6 @@
 #ifndef OLED_H
 #define OLED_H
+#define OLED_ADDRESS 0x3C
 
 #include <stdint.h>
 
