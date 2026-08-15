@@ -58,6 +58,15 @@ static void oled_set_cursor(uint8_t column, uint8_t page)
     oled_send_command(instructions, ARRAY_LENGTH(instructions));
 }
 
+void oled_set_pointer_cursor(uint8_t page)
+{
+    uint8_t instructions[] = {
+        OLED_CMD_COLUMN_ADDRESS, 0, 5,
+        OLED_CMD_PAGE_ADDRESS, page, page};
+
+    oled_send_command(instructions, ARRAY_LENGTH(instructions));
+}
+
 void oled_set_text_cursor(uint8_t col, uint8_t row)
 {
     oled_set_cursor(col * TEXT_SIZE, row);
