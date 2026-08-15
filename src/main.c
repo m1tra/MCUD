@@ -5,21 +5,31 @@
 
 #include "i2c.h"
 #include "oled.h"
+#include "utils.h"
+
 
 int main()
 {
 
     i2c_init();
     oled_init();
-
-    uint8_t test[1024];
-
-    for (uint16_t i = 0; i < 1024; i++)
-    {
-        test[i] = 0xFF;
-    }
-
-    oled_send_data(test, 1024);
+    oled_clear();
+    oled_set_text_cursor(0,0);
+    oled_write_string("HELLO WORLD", 11);
+    oled_set_text_cursor(0,1);
+    oled_write_string("HELLO WORLD", 11);
+    oled_set_text_cursor(0,2);
+    oled_write_string("HELLO WORLD", 11);
+    oled_set_text_cursor(0,3);
+    oled_write_string("HELLO WORLD", 11);
+    oled_set_text_cursor(0,4);
+    oled_write_string("HELLO WORLD", 11);
+    oled_set_text_cursor(0,5);
+    oled_write_string("HELLO WORLD", 11);
+    oled_set_text_cursor(0,6);
+    oled_write_string("HELLO WORLD", 11);
+    oled_set_text_cursor(0,7);
+    oled_write_string("HELLO WORLD", 11);
 
     while (1)
     {
