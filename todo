@@ -1,0 +1,2 @@
+баг с заморозкой oled;
+создать struct вместо x_value, y_value; 
