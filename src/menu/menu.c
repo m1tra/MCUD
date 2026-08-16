@@ -4,6 +4,9 @@
 #include "i2c.h"
 #include "utils.h"
 #include "../tools/i2c_scanner.h"
+#include "../tools/pwm_generator.h"
+#include "../ui/ui.h"
+
 #include <stdint.h>
 #include <string.h>
 #include <util/delay.h>
@@ -11,80 +14,69 @@
 
 static uint8_t is_command_execute = 0;
 
-static void scanner_header(const char *name)
+static void tool_open(const char *name)
 {
+
     is_command_execute = 1;
+
     oled_clear();
     oled_write_string(name, strlen(name));
 }
 
-static void i2c_scanner_run(void)
+void i2c_scanner_run(void)
 {
-    scanner_header("I2C Scanner");
+    ui_set_screen(SCREEN_I2C_SCANNER);
+    tool_open("I2C Scanner");
     i2c_scanner();
 }
 
-static void adc_monitor_run(void)
+void adc_monitor_run(void)
 {
-    is_command_execute = 1;
-    oled_clear();
-    oled_write_string("ADC Monitor", 11);
+    ui_set_screen(SCREEN_ADC_MONITOR);
+    tool_open("ADC Monitor");
 }
 
-static void pwm_generator_run(void)
+void pwm_generator_run(void)
 {
-    is_command_execute = 1;
-    oled_clear();
-    oled_write_string("PWM Generator", 13);
+    ui_set_screen(SCREEN_PWM_GENERATOR);
+    tool_open("PWM Generator");
+    pwm_generator();
 }
 
-static void gpio_tester_run(void)
+void gpio_tester_run(void)
 {
-    is_command_execute = 1;
-    oled_clear();
-    oled_write_string("GPIO Tester", 11);
+    ui_set_screen(SCREEN_GPIO_TESTER);
+    tool_open("GPIO Tester");
 }
 
-static void uart_terminal_run(void)
+void uart_terminal_run(void)
 {
-    is_command_execute = 1;
-    oled_clear();
-    oled_write_string("UART Terminal", 13);
+    ui_set_screen(SCREEN_UART_TERMINAL);
+    tool_open("UART Terminal");
 }
 
-static void servo_tester_run(void)
+void servo_tester_run(void)
 {
-    is_command_execute = 1;
-    oled_clear();
-    oled_write_string("Servo Tester", 12);
+    ui_set_screen(SCREEN_SERVO_TESTER);
+    tool_open("Servo Tester");
 }
 
-static void sensor_info_run(void)
+void sensor_info_run(void)
 {
-    is_command_execute = 1;
-    oled_clear();
-    oled_write_string("Sensor Info", 11);
+    ui_set_screen(SCREEN_SENSOR_INFO);
+    tool_open("Sensor Info");
 }
 
-const Command menu[] = {
-    {"I2C Scanner", i2c_scanner_run},
-    {"ADC Monitor", adc_monitor_run},
-    {"PWM Generator", pwm_generator_run},
-    {"GPIO Tester", gpio_tester_run},
-    {"UART Terminal", uart_terminal_run},
-    {"Servo Tester", servo_tester_run},
-    {"Sensor Info", sensor_info_run},
-};
-
-void menu_init(uint8_t pointer)
+void menu_init(Menu *menu)
 {
-    oled_set_pointer_cursor(pointer);
+    oled_set_pointer_cursor(menu->pointer + menu->start_pos);
     oled_write_string(">", 1);
-    for (uint8_t i = 0; i < MENU_SIZE; i++)
-    {
-        oled_set_text_cursor(1, i);
 
-        const char *position_of_menu = menu[i].name;
+    for (uint8_t i = 0; i < menu->size; i++)
+    {
+        oled_set_text_cursor(1, i + menu->start_pos);
+
+        const char *position_of_menu = menu->items[i].name;
 
         oled_write_string(
             position_of_menu,
@@ -92,25 +84,26 @@ void menu_init(uint8_t pointer)
     }
 }
 
-uint8_t menu_pointer_scroll_down(uint16_t y_value, uint8_t pointer)
+void menu_pointer_scroll_down(uint16_t y_value, Menu *menu)
 {
-    if (is_command_execute)
-    {
-        return pointer;
-    }
+    // if (is_command_execute)
+    // {
+    //     return;
+    // }
+
     while (y_value > MIDDLE_VALUE + PADDING)
     {
-        oled_set_pointer_cursor(pointer);
+        oled_set_pointer_cursor(menu->pointer + menu->start_pos);
         oled_write_string(" ", 1);
 
-        pointer++;
+        menu->pointer++;
 
-        if (pointer >= MENU_SIZE)
+        if (menu->pointer >= menu->size)
         {
-            pointer = 0;
+            menu->pointer = 0;
         }
 
-        oled_set_pointer_cursor(pointer);
+        oled_set_pointer_cursor(menu->pointer + menu->start_pos);
         oled_write_string(">", 1);
 
         _delay_ms(250);
@@ -120,30 +113,30 @@ uint8_t menu_pointer_scroll_down(uint16_t y_value, uint8_t pointer)
             y_value = adc_get_y_value();
         }
     }
-    return pointer;
 }
 
-uint8_t menu_pointer_scroll_up(uint16_t y_value, uint8_t pointer)
+void menu_pointer_scroll_up(uint16_t y_value, Menu *menu)
 {
-    if (is_command_execute)
-    {
-        return pointer;
-    }
+    // if (is_command_execute)
+    // {
+    //     return;
+    // }
+
     while (y_value < MIDDLE_VALUE - PADDING)
     {
-        oled_set_pointer_cursor(pointer);
+        oled_set_pointer_cursor(menu->pointer + menu->start_pos);
         oled_write_string(" ", 1);
 
-        if (pointer == 0)
+        if (menu->pointer == 0)
         {
-            pointer = MENU_SIZE - 1;
+            menu->pointer = menu->size - 1;
         }
         else
         {
-            pointer--;
+            menu->pointer--;
         }
 
-        oled_set_pointer_cursor(pointer);
+        oled_set_pointer_cursor(menu->pointer + menu->start_pos);
         oled_write_string(">", 1);
 
         _delay_ms(250);
@@ -153,23 +146,25 @@ uint8_t menu_pointer_scroll_up(uint16_t y_value, uint8_t pointer)
             y_value = adc_get_y_value();
         }
     }
-    return pointer;
 }
 
-void menu_choose_by_pointer(uint16_t x_value, uint8_t pointer)
+void menu_choose_by_pointer(uint16_t x_value, Menu *menu)
 {
-    if (x_value > MIDDLE_VALUE + PADDING & is_command_execute == 0)
+    if (x_value > MIDDLE_VALUE + PADDING &&
+        is_command_execute == 0)
     {
-        menu[pointer].execute();
+        menu->items[menu->pointer].execute();
     }
 }
 
-void menu_close(uint16_t x_value, uint8_t pointer)
+void menu_close(uint16_t x_value, Menu *menu)
 {
-    if (x_value < MIDDLE_VALUE - PADDING & is_command_execute == 1)
+    if (x_value < MIDDLE_VALUE - PADDING &&
+        is_command_execute == 1)
     {
         is_command_execute = 0;
+
         oled_clear();
-        menu_init(pointer);
+        menu_init(menu);
     }
 }

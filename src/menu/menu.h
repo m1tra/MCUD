@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-#define MENU_SIZE 7
-
 typedef void (*CommandHandler)(void);
 
 typedef struct
@@ -13,22 +11,30 @@ typedef struct
     CommandHandler execute;
 } Command;
 
-extern const Command menu[];
+typedef struct
+{
+    const Command *items;
+    uint8_t size;
+    uint8_t pointer;
+    uint8_t start_pos;
+} Menu;
 
-void menu_init(uint8_t pointer);
+void menu_init(Menu *menu);
 
-uint8_t menu_pointer_scroll_down(
+void menu_pointer_scroll_down(
     uint16_t y_value,
-    uint8_t pointer);
+    Menu *menu);
 
-uint8_t menu_pointer_scroll_up(
+void menu_pointer_scroll_up(
     uint16_t y_value,
-    uint8_t pointer);
+    Menu *menu);
 
 void menu_choose_by_pointer(
     uint16_t x_value,
-    uint8_t pointer);
+    Menu *menu);
 
-void menu_close(uint16_t x_value, uint8_t pointer);
+void menu_close(
+    uint16_t x_value,
+    Menu *menu);
 
 #endif
