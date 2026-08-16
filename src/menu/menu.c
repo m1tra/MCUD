@@ -1,17 +1,27 @@
 #include "oled.h"
 #include "menu.h"
 #include "adc.h"
+#include "i2c.h"
+#include "utils.h"
+#include "../tools/i2c_scanner.h"
 #include <stdint.h>
 #include <string.h>
 #include <util/delay.h>
+#include <stdlib.h>
 
 static uint8_t is_command_execute = 0;
 
-static void i2c_scanner_run(void)
+static void scanner_header(const char *name)
 {
     is_command_execute = 1;
     oled_clear();
-    oled_write_string("I2C Scanner", 11);
+    oled_write_string(name, strlen(name));
+}
+
+static void i2c_scanner_run(void)
+{
+    scanner_header("I2C Scanner");
+    i2c_scanner();
 }
 
 static void adc_monitor_run(void)
@@ -56,15 +66,14 @@ static void sensor_info_run(void)
     oled_write_string("Sensor Info", 11);
 }
 
-
 const Command menu[] = {
-    {"I2C Scanner",   i2c_scanner_run},
-    {"ADC Monitor",   adc_monitor_run},
+    {"I2C Scanner", i2c_scanner_run},
+    {"ADC Monitor", adc_monitor_run},
     {"PWM Generator", pwm_generator_run},
-    {"GPIO Tester",   gpio_tester_run},
+    {"GPIO Tester", gpio_tester_run},
     {"UART Terminal", uart_terminal_run},
-    {"Servo Tester",  servo_tester_run},
-    {"Sensor Info",   sensor_info_run},
+    {"Servo Tester", servo_tester_run},
+    {"Sensor Info", sensor_info_run},
 };
 
 void menu_init(uint8_t pointer)
@@ -85,7 +94,10 @@ void menu_init(uint8_t pointer)
 
 uint8_t menu_pointer_scroll_down(uint16_t y_value, uint8_t pointer)
 {
-    if (is_command_execute){ return pointer;}
+    if (is_command_execute)
+    {
+        return pointer;
+    }
     while (y_value > MIDDLE_VALUE + PADDING)
     {
         oled_set_pointer_cursor(pointer);
@@ -113,7 +125,10 @@ uint8_t menu_pointer_scroll_down(uint16_t y_value, uint8_t pointer)
 
 uint8_t menu_pointer_scroll_up(uint16_t y_value, uint8_t pointer)
 {
-    if (is_command_execute){ return pointer;}
+    if (is_command_execute)
+    {
+        return pointer;
+    }
     while (y_value < MIDDLE_VALUE - PADDING)
     {
         oled_set_pointer_cursor(pointer);
@@ -141,15 +156,18 @@ uint8_t menu_pointer_scroll_up(uint16_t y_value, uint8_t pointer)
     return pointer;
 }
 
-void menu_choose_by_pointer(uint16_t x_value, uint8_t pointer){
-    if (x_value > MIDDLE_VALUE + PADDING & is_command_execute==0){
+void menu_choose_by_pointer(uint16_t x_value, uint8_t pointer)
+{
+    if (x_value > MIDDLE_VALUE + PADDING & is_command_execute == 0)
+    {
         menu[pointer].execute();
-        
     }
 }
 
-void menu_close(uint16_t x_value, uint8_t pointer){
-    if (x_value < MIDDLE_VALUE - PADDING & is_command_execute==1){
+void menu_close(uint16_t x_value, uint8_t pointer)
+{
+    if (x_value < MIDDLE_VALUE - PADDING & is_command_execute == 1)
+    {
         is_command_execute = 0;
         oled_clear();
         menu_init(pointer);

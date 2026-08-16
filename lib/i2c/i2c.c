@@ -1,8 +1,10 @@
 #include "i2c.h"
 #include <avr/io.h>
 
-static void spinLoop(){
-    while (!(TWCR & (1 << TWINT)));
+static void spinLoop()
+{
+    while (!(TWCR & (1 << TWINT)))
+        ;
 }
 
 void i2c_init(void)
@@ -23,6 +25,28 @@ void i2c_start(void)
     spinLoop();
 }
 
+uint8_t i2c_ping(uint8_t address)
+{
+    TWDR = address << 1;
+
+    TWCR =
+        (1 << TWINT) |
+        (1 << TWEN) |
+        (1 << TWEA);
+
+    spinLoop();
+
+    uint8_t status = TWSR & 0xF8;
+    
+    if (status == 0x18) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+
 void i2c_write(uint8_t data)
 {
     TWDR = data;
@@ -30,7 +54,7 @@ void i2c_write(uint8_t data)
     TWCR =
         (1 << TWINT) |
         (1 << TWEN);
-    
+
     spinLoop();
 }
 void i2c_stop(void)
