@@ -3,30 +3,32 @@
 #include "../src/menus/menus.h"
 #include <stdint.h>
 
-
-
 static Screen current_screen = SCREEN_MAIN_MENU;
 
 static void enableScroll(uint16_t y, Menu *menu)
 {
     menu_pointer_scroll_down(
         y,
-        &menu);
+        menu);
 
     menu_pointer_scroll_up(
         y,
-        &menu);
+        menu);
 }
 
 static void enableSelect(uint16_t x, Menu *menu)
 {
     menu_choose_by_pointer(
         x,
-        &menu);
+        menu);
 
+}
+static void enableClose(uint16_t x, Menu *menu)
+{
     menu_close(
         x,
-        &menu);
+        menu);
+
 }
 
 void ui_set_screen(Screen screen)
@@ -62,9 +64,11 @@ void ui_handle_x(uint16_t x, Menu *menu)
         enableSelect(x, &main_menu);
         break;
     case SCREEN_I2C_SCANNER:
+        enableClose(x, &main_menu);
         break;
     case SCREEN_PWM_GENERATOR:
         enableSelect(x, &pwm_menu);
+        enableClose(x, &main_menu);
         break;
     }
 }

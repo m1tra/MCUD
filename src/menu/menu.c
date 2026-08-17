@@ -163,6 +163,7 @@ void menu_close(uint16_t x_value, Menu *menu)
         is_command_execute == 1)
     {
         is_command_execute = 0;
+        ui_set_screen(SCREEN_MAIN_MENU);
 
         oled_clear();
         menu_init(menu);
