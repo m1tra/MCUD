@@ -4,11 +4,13 @@
 #include <stdint.h>
 
 typedef void (*CommandHandler)(void);
+typedef void (*CommandDraw)(void);
 
 typedef struct
 {
     const char *name;
     CommandHandler execute;
+    CommandDraw draw;
 } Command;
 
 typedef struct

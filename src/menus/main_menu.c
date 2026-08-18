@@ -3,13 +3,13 @@
 #include "utils.h"
 
 static const Command main_menu_items[] = {
-    {"I2C Scanner",   i2c_scanner_run},
-    {"ADC Monitor",   i2c_scanner_run},
-    {"PWM Generator", pwm_generator_run},
-    {"GPIO Tester",   i2c_scanner_run},
-    {"UART Terminal", i2c_scanner_run},
-    {"Servo Tester",  i2c_scanner_run},
-    {"Sensor Info",   i2c_scanner_run},
+    {"I2C Scanner",   i2c_scanner_run, NULL},
+    {"ADC Monitor",   i2c_scanner_run, NULL},
+    {"PWM Generator", pwm_generator_run, NULL},
+    {"GPIO Tester",   i2c_scanner_run, NULL},
+    {"UART Terminal", i2c_scanner_run, NULL},
+    {"Servo Tester",  i2c_scanner_run, NULL},
+    {"Sensor Info",   i2c_scanner_run, NULL},
 };
 
 Menu main_menu = {

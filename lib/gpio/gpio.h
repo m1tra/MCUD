@@ -8,6 +8,7 @@ typedef struct {
     volatile uint8_t *port;
     volatile uint8_t *pin;
     uint8_t bit;
+    char *name;
 } GPIO_pin;
 
 void gpio_output(GPIO_pin *pin);

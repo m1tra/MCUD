@@ -1,33 +1,17 @@
 #include "menus.h"
 #include "utils.h"
+#include "gpio.h"
+#include "../src/tools/index.h"
 #include <stdint.h>
 #include <avr/io.h>
 
-static void pin_action(void)
-{
-    // typedef enum
-    // {
-    //     PH3,
-    //     PH4,
-    //     PH5
-    // } Pins; // 4 timer
 
-  
-    
-}
-
-static void freq_action(void)
-{
-}
-
-static void duty_action(void)
-{
-}
 
 static const Command pwm_menu_items[] = {
-    {"Pin:", pin_action},
-    {"Freq:", freq_action},
-    {"Duty:", duty_action},
+    {"Pin:", pin_action, draw_pin},
+    {"Freq:", freq_action, draw_freq},
+    {"Duty:", duty_action, draw_duty},
+    {"Confirm", confirm_action, NULL},
 };
 
 Menu pwm_menu = {

@@ -1,4 +1,6 @@
-баг с заморозкой oled;
 создать struct вместо x_value, y_value; 
 menu_close ui_set_screen(SCREEN_MAIN_MENU); убрать
 по хорошему дерево построить для меню
+разделить pwm_generator на логику и ui
+РЕФАКТОР pwm_generator(убрать хардкод)
+макрос для delay

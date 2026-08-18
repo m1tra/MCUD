@@ -12,12 +12,10 @@
 #include <util/delay.h>
 #include <stdlib.h>
 
-static uint8_t is_command_execute = 0;
 
 static void tool_open(const char *name)
 {
 
-    is_command_execute = 1;
 
     oled_clear();
     oled_write_string(name, strlen(name));
@@ -69,18 +67,27 @@ void sensor_info_run(void)
 
 void menu_init(Menu *menu)
 {
-    oled_set_pointer_cursor(menu->pointer + menu->start_pos);
+    oled_set_pointer_cursor(
+        menu->pointer + menu->start_pos);
+
     oled_write_string(">", 1);
 
     for (uint8_t i = 0; i < menu->size; i++)
     {
-        oled_set_text_cursor(1, i + menu->start_pos);
+        const Command *item = &menu->items[i];
 
-        const char *position_of_menu = menu->items[i].name;
+        oled_set_text_cursor(
+            1,
+            i + menu->start_pos);
 
         oled_write_string(
-            position_of_menu,
-            strlen(position_of_menu));
+            item->name,
+            strlen(item->name));
+
+        if (item->draw != NULL)
+        {
+            item->draw();
+        }
     }
 }
 
@@ -150,19 +157,17 @@ void menu_pointer_scroll_up(uint16_t y_value, Menu *menu)
 
 void menu_choose_by_pointer(uint16_t x_value, Menu *menu)
 {
-    if (x_value > MIDDLE_VALUE + PADDING &&
-        is_command_execute == 0)
+    if (x_value > MIDDLE_VALUE + PADDING)
     {
         menu->items[menu->pointer].execute();
+        _delay_ms(250);
     }
 }
 
 void menu_close(uint16_t x_value, Menu *menu)
 {
-    if (x_value < MIDDLE_VALUE - PADDING &&
-        is_command_execute == 1)
+    if (x_value < MIDDLE_VALUE - PADDING)
     {
-        is_command_execute = 0;
         ui_set_screen(SCREEN_MAIN_MENU);
 
         oled_clear();
