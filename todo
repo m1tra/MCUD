@@ -4,3 +4,4 @@ menu_close ui_set_screen(SCREEN_MAIN_MENU); убрать
 разделить pwm_generator на логику и ui
 РЕФАКТОР pwm_generator(убрать хардкод)
 макрос для delay
+двойной процент в duty 

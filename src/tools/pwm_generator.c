@@ -10,6 +10,8 @@
 #include "utils.h"
 #include "GPIO.h"
 #include "oled.h"
+#include "pwm.h"
+#include "../src/tools/pwm_generator.h"
 
 GPIO_pin PH3_pin = {
     &DDRH,
@@ -57,13 +59,6 @@ const uint8_t duty_step = 10;
 uint8_t pwm_pin_pointer = 0;
 uint8_t pwm_freq_pointer = 0;
 uint8_t pwm_duty = 10;
-
-typedef struct
-{
-    GPIO_pin *pin;
-    uint32_t freq;
-    uint8_t duty;
-} Settings;
 
 Settings pwm_setting;
 
@@ -153,7 +148,7 @@ void duty_action(void)
 
 void confirm_action(void)
 {
-
+    pwm_init(pwm_setting);
 }
 
 void pwm_generator(void)
