@@ -5,5 +5,6 @@
 
 extern Menu main_menu;
 extern Menu pwm_menu;
+extern Menu servo_tester_menu;
 
 #endif

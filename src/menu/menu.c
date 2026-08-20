@@ -57,6 +57,7 @@ void servo_tester_run(void)
 {
     ui_set_screen(SCREEN_SERVO_TESTER);
     tool_open("Servo Tester");
+    servo_tester();
 }
 
 void sensor_info_run(void)

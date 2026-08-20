@@ -5,3 +5,5 @@ menu_close ui_set_screen(SCREEN_MAIN_MENU); убрать
 РЕФАКТОР pwm_generator(убрать хардкод)
 макрос для delay
 двойной процент в duty 
+добавить cancel для pwm generator
+реюзаберьный draw(убрать хардкод)

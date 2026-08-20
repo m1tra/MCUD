@@ -53,6 +53,9 @@ void ui_handle_y(uint16_t y)
     case SCREEN_PWM_GENERATOR:
         enableScroll(y, &pwm_menu);
         break;
+    case SCREEN_SERVO_TESTER:
+        enableScroll(y, &servo_tester_menu);
+        break;
     }
 }
 
@@ -68,6 +71,10 @@ void ui_handle_x(uint16_t x, Menu *menu)
         break;
     case SCREEN_PWM_GENERATOR:
         enableSelect(x, &pwm_menu);
+        enableClose(x, &main_menu);
+        break;
+    case SCREEN_SERVO_TESTER:
+        enableSelect(x, &servo_tester_menu);
         enableClose(x, &main_menu);
         break;
     }
